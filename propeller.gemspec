@@ -8,8 +8,8 @@ Gem::Specification.new do |gem|
   gem.version       = Propeller::VERSION
   gem.authors       = ["wilkie"]
   gem.email         = ["wilkie05@gmail.com"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
+  gem.description   = %q{Allows easy configuration and deployment of applications.}
+  gem.summary       = %q{ We are reaching a time when we want our applications to be widely deployed by as many people as possible, and we want to impose little to no technical assumptions on our users. This gem helps people install your applications directly to several different hosting options and allows them to consistently enable extra features.}
   gem.homepage      = ""
 
   gem.files         = `git ls-files`.split($/)

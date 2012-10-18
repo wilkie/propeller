@@ -1,6 +1,8 @@
 # Propeller
 
-TODO: Write a gem description
+We are reaching a time when we want our applications to be widely deployed by as many people as possible, and we want
+to impose little to no technical assumptions on our users. This gem helps people install your applications directly
+to several different hosting options and allows them to consistently enable extra features.
 
 ## Installation
 
