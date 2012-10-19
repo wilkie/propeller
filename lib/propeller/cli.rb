@@ -61,13 +61,19 @@ module Propeller
           Gruesome::Machine.new(ARGV[1]).execute
         else
           config = Propeller::Blade.new
+
+          puts "Configuring #{config.name}..."
+          puts ""
+          puts "Addons"
+
           config.addons.each do |addon|
+            puts ""
             puts "Would you like to add #{addon.name} support?"
             puts "#{addon.description}"
             print "(y/N): "
-            value = readline
+            value = readline.chomp
             if value == ""
-              value = option.default
+              value = false
             else
               value = !!value.match(/^y$/i)
             end
@@ -80,16 +86,17 @@ module Propeller
               puts ""
               puts section.name
               section.options.each do |option|
+                puts ""
                 puts option.description
                 case option.type
                 when :bool
                   if option.default == true
-                    print "(Y\n): "
+                    print "(Y/n): "
                   else
-                    print "(y\N): "
+                    print "(y/N): "
                   end
 
-                  value = readline
+                  value = readline.chomp
                   if value == ""
                     value = option.default
                   else
@@ -97,13 +104,13 @@ module Propeller
                   end
                 when :string
                   print " : "
-                  value = readline
+                  value = readline.chomp
                   if value == ""
                     value = option.default
                   end
                 when :integer
                   print "(#{option.min}-#{option.max}, #{option.default}): "
-                  value = readline
+                  value = readline.chomp
                   if value == ""
                     value = option.default
                   else
@@ -111,7 +118,7 @@ module Propeller
                   end
                 when :decimal
                   print "(#{option.min}-#{option.max}, #{option.default}): "
-                  value = readline
+                  value = readline.chomp
                   if value == ""
                     value = option.default
                   else
