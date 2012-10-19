@@ -64,19 +64,69 @@ module Propeller
           config.addons.each do |addon|
             puts "Would you like to add #{addon.name} support?"
             puts "#{addon.description}"
-            puts "(y/N): "
+            print "(y/N): "
+            value = readline
+            if value == ""
+              value = option.default
+            else
+              value = !!value.match(/^y$/i)
+            end
           end
 
           settings = []
 
           config.sections.each do |section|
             if section.is_visible?(settings)
+              puts ""
               puts section.name
               section.options.each do |option|
-                settings << option.default
-                puts option.name
+                puts option.description
+                case option.type
+                when :bool
+                  if option.default == true
+                    print "(Y\n): "
+                  else
+                    print "(y\N): "
+                  end
+
+                  value = readline
+                  if value == ""
+                    value = option.default
+                  else
+                    value = !!value.match(/^y$/i)
+                  end
+                when :string
+                  print " : "
+                  value = readline
+                  if value == ""
+                    value = option.default
+                  end
+                when :integer
+                  print "(#{option.min}-#{option.max}, #{option.default}): "
+                  value = readline
+                  if value == ""
+                    value = option.default
+                  else
+                    value = value.to_i
+                  end
+                when :decimal
+                  print "(#{option.min}-#{option.max}, #{option.default}): "
+                  value = readline
+                  if value == ""
+                    value = option.default
+                  else
+                    value = value.to_f
+                  end
+                end
+
+                settings << Propeller::Configuration::Setting.new(:option => option,
+                                                                  :value => value)
               end
             end
+          end
+
+          settings.each do |setting|
+            puts setting
           end
         end
       end
