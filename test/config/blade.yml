@@ -1,0 +1,40 @@
+name: "rstat.us"
+
+addons:
+  - name: "search"
+    git: ["http://github.com/hotsh/rstat.us-search",
+          "http://gitorious.com/hotsh/rstat.us-search",
+          "http://code.rstat.us.com/rstat.us-search"]
+    description: "Provides better search indexing of statuses."
+  - name: "twitter"
+    git: ["http://github.com/hotsh/rstat.us-twitter",
+          "http://gitorious.com/hotsh/rstat.us-twitter",
+          "http://code.rstat.us.com/rstat.us-twitter"]
+    description: "Provides twitter push/pull support"
+
+# Load plugins' blade.yml as well when they are discovered
+# Ask user if they want any of the available addons
+
+# Types
+# bool, string, integer, decimal
+
+configuration:
+  - section:
+    name: "Main"
+    options:
+      - name: title
+        description: "What will be the title of this node?"
+        type: string
+        default: Status Node
+      - name: multi_user
+        description: "Allow multiple user accounts?"
+        type: bool
+        default: false
+  - section:
+    name: "Multi-User"
+    if: multi_user
+    options:
+      - name: "send_email"
+        description: "Must verify via email address to change password or email?"
+        type: bool
+        default: true

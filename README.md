@@ -18,9 +18,48 @@ Or install it yourself as:
 
     $ gem install propeller
 
-## Usage
+## Describing a Blade
 
-TODO: Write usage instructions here
+Place a blade.yml file in your config/ path. And then specify three things:
+
+### Blade Name
+
+    name: My Blade
+
+### Addons
+
+    addons:
+      - name: "addon-name"
+        git: ["https://github.com/gitpath",
+              "https://mymirror.com/gitpath]
+        description: "The text to display to describe this addon to the user."
+
+Addons may also have their own blade.yml that will specify configuration options
+specifically for the extra functionality.
+
+### Configuration
+
+    configuration:
+      - section:
+        name: "Main"
+        options:
+          - name: title
+            description: "What will be the title of this node?"
+            type: string
+            default: "My Node"
+      - section:
+        name: "Appearance"
+        options:
+          - name: background_color
+            description: "What will the background color be?"
+            type: integer
+            default: 0xffffff
+
+Configuration options specify features that a user can enable or disable. Addons may
+include additional configuration options under new sections.
+
+These can be output into a blade.settings.yml using the tool and read into the
+application. If no settings are found, the defaults are used from the blade.yml file.
 
 ## Contributing
 
