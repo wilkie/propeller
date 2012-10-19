@@ -66,8 +66,15 @@ module Propeller
             puts "(y/N): "
           end
 
+          settings = []
+
           config.sections.each do |section|
             puts section.name
+            if section.is_visible?(settings)
+              section.options.each do |option|
+                puts option.name
+              end
+            end
           end
         end
       end
