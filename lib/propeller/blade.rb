@@ -3,7 +3,7 @@ require 'yaml'
 require 'propeller/addon'
 
 module Propeller
-  class Configuration
+  class Blade
     attr_accessor :addons
 
     def initialize(options = {})

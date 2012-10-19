@@ -1,7 +1,7 @@
 require 'optparse'
 
 require 'propeller'
-require 'propeller/configuration'
+require 'propeller/blade'
 
 module Propeller
   class CLI
@@ -59,7 +59,7 @@ module Propeller
 
           Gruesome::Machine.new(ARGV[1]).execute
         else
-          config = Propeller::Configuration.new
+          config = Propeller::Blade.new
           config.addons.each do |addon|
             puts "Would you like to add #{addon.name} support?"
             puts "#{addon.description}"
