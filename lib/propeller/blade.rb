@@ -6,14 +6,16 @@ require 'propeller/configuration/option'
 
 module Propeller
   class Blade
+    attr_accessor :name
     attr_accessor :addons
-
     attr_accessor :sections
 
     def initialize(options = {})
       options = {:config_file => "config/blade.yml"}.merge(options)
 
       @yaml = load_yaml(options[:config_file])
+
+      @name = @yaml['name']
 
       @addons = @yaml['addons'].map do |addon|
         addon.keys.each do |key|
