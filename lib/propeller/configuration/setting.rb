@@ -8,6 +8,10 @@ module Propeller
         @option = value_hash[:option]
         @value  = value_hash[:value]
       end
+
+      def to_s
+        "[#{@option.name}] => #{@value}"
+      end
     end
   end
 end
