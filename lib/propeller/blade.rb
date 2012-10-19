@@ -2,6 +2,7 @@ require 'yaml'
 
 require 'propeller/addon'
 require 'propeller/configuration/section'
+require 'propeller/configuration/option'
 
 module Propeller
   class Blade
@@ -31,6 +32,10 @@ module Propeller
           option.keys.each do |key|
             option[(key.to_sym rescue key) || key] = option.delete(key)
           end
+
+          option[:type] = option[:type].to_sym if option[:type]
+
+          Propeller::Configuration::Option.new option
         end
 
         Propeller::Configuration::Section.new section
