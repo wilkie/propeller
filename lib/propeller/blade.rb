@@ -1,10 +1,13 @@
 require 'yaml'
 
 require 'propeller/addon'
+require 'propeller/configuration/section'
 
 module Propeller
   class Blade
     attr_accessor :addons
+
+    attr_accessor :sections
 
     def initialize(options = {})
       options = {:config_file => "config/blade.yml"}.merge(options)
@@ -17,6 +20,20 @@ module Propeller
         end
 
         Propeller::Addon.new addon
+      end
+
+      @sections = @yaml['configuration'].map do |section|
+        section.keys.each do |key|
+          section[(key.to_sym rescue key) || key] = section.delete(key)
+        end
+
+        section[:options].map! do |option|
+          option.keys.each do |key|
+            option[(key.to_sym rescue key) || key] = option.delete(key)
+          end
+        end
+
+        Propeller::Configuration::Section.new section
       end
     end
 

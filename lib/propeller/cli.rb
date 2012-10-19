@@ -65,6 +65,10 @@ module Propeller
             puts "#{addon.description}"
             puts "(y/N): "
           end
+
+          config.sections.each do |section|
+            puts section.name
+          end
         end
       end
     end
