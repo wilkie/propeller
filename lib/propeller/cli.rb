@@ -2,6 +2,7 @@ require 'optparse'
 
 require 'propeller'
 require 'propeller/blade'
+require 'propeller/configuration/setting'
 
 module Propeller
   class CLI
@@ -69,9 +70,10 @@ module Propeller
           settings = []
 
           config.sections.each do |section|
-            puts section.name
             if section.is_visible?(settings)
+              puts section.name
               section.options.each do |option|
+                settings << option.default
                 puts option.name
               end
             end
