@@ -2,6 +2,7 @@ require 'optparse'
 
 require 'propeller'
 require 'propeller/blade'
+require 'propeller/selection'
 require 'propeller/configuration/setting'
 
 module Propeller
@@ -132,9 +133,14 @@ module Propeller
             end
           end
 
-          settings.each do |setting|
-            puts setting
-          end
+          puts ""
+
+          puts "Options: "
+          configuration = Propeller::Selection.new settings
+          puts configuration
+
+          puts
+          puts configuration[:multi_user]
         end
       end
     end
