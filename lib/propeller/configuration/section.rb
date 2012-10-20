@@ -10,6 +10,18 @@ module Propeller
         @if      = section_hash[:if]
       end
 
+      def contains_option?(name)
+        @options.select{|o| o.name == name}.length > 0
+      end
+
+      def option(name)
+        result = @options.select do |option|
+          option.name == name
+        end
+
+        result.first
+      end
+
       def is_visible?(settings)
         return true if @if.nil?
 
