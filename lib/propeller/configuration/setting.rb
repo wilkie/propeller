@@ -1,6 +1,8 @@
 module Propeller
   module Configuration
     class Setting
+      require 'json'
+
       attr_accessor :option
       attr_accessor :value
 
@@ -9,8 +11,16 @@ module Propeller
         @value  = value_hash[:value]
       end
 
+      def to_yaml
+        "#{@option.name.to_json}: #{@value.to_json}"
+      end
+
+      def to_json
+        "#{@option.name.to_json}: #{@value.to_json}"
+      end
+
       def to_s
-        "[#{@option.name}] => #{@value}"
+        to_yaml
       end
     end
   end
