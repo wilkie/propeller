@@ -1,11 +1,12 @@
-require 'yaml'
-
 require 'propeller/addon'
 require 'propeller/configuration/section'
 require 'propeller/configuration/option'
+require 'propeller/selection'
 
 module Propeller
   class Blade
+    require 'yaml'
+
     attr_accessor :name
     attr_accessor :addons
     attr_accessor :sections
@@ -13,11 +14,11 @@ module Propeller
     def initialize(options = {})
       options = {:config_file => "config/blade.yml"}.merge(options)
 
-      @yaml = load_yaml(options[:config_file])
+      yaml = YAML::load_file(options[:config_file])
 
-      @name = @yaml['name']
+      @name = yaml['name']
 
-      @addons = @yaml['addons'].map do |addon|
+      @addons = yaml['addons'].map do |addon|
         addon.keys.each do |key|
           addon[(key.to_sym rescue key) || key] = addon.delete(key)
         end
@@ -25,7 +26,7 @@ module Propeller
         Propeller::Addon.new addon
       end
 
-      @sections = @yaml['configuration'].map do |section|
+      @sections = yaml['configuration'].map do |section|
         section.keys.each do |key|
           section[(key.to_sym rescue key) || key] = section.delete(key)
         end
@@ -36,6 +37,7 @@ module Propeller
           end
 
           option[:type] = option[:type].to_sym if option[:type]
+          option[:name] = option[:name].to_sym if option[:name]
 
           Propeller::Configuration::Option.new option
         end
@@ -44,10 +46,34 @@ module Propeller
       end
     end
 
+    def selection(options = {})
+      @selection || load_selection(options)
+    end
+
+    def option(name)
+      section = @sections.select{|s| s.contains_option?(name)}.first
+
+      unless section.nil?
+        section.option(name)
+      end
+    end
+
     private
 
-    def load_yaml(config)
-      YAML::load_file(config)
+    def load_selection(options = {})
+      options = {:config_file => "config/blade.settings.yml"}.merge(options)
+
+      yaml = YAML::load_file(options[:config_file])
+
+      settings = []
+      yaml.each do |key, value|
+        name = key.to_sym
+        option = option(name)
+        settings << Propeller::Configuration::Setting.new(:option => option,
+                                                          :value  => value)
+      end
+
+      @selection = Propeller::Selection.new settings
     end
   end
 end
