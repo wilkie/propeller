@@ -5,7 +5,7 @@ module Propeller
       attr_accessor :options
 
       def initialize(section_hash)
-        @name    = section_hash[:name]
+        @name    = section_hash[:section]
         @options = section_hash[:options]
         @if      = section_hash[:if]
       end

@@ -19,8 +19,7 @@ addons:
 # bool, string, integer, decimal
 
 configuration:
-  - section:
-    name: "Main"
+  - section: "Main"
     options:
       - name: title
         description: "What will be the title of this node?"
@@ -30,8 +29,7 @@ configuration:
         description: "Allow multiple user accounts?"
         type: bool
         default: false
-  - section:
-    name: "Multi-User"
+  - section: "Multi-User"
     if: multi_user
     options:
       - name: "send_email"
