@@ -8,15 +8,6 @@ require 'propeller/configuration/setting'
 module Propeller
   class CLI
     BANNER = <<-USAGE
-    Usage:
-      gruesome play STORY_FILE
-
-    Description:
-      The 'play' command will start a session of the story given as STORY_FILE
-
-    Example:
-      gruesome play zork1.z3
-
     USAGE
 
     class << self
@@ -29,7 +20,13 @@ module Propeller
 
           opts.on('-h', '--help', 'Display this help') do
             puts opts
-            exit
+            exit 0
+          end
+
+          opts.on('-s', '--selection', 'Display the current user selections') do
+            config = Propeller::Blade.new
+            puts config.selection
+            exit 0
           end
         end
 
@@ -49,6 +46,7 @@ module Propeller
           exit -1
         end
 
+        # Default
         config = Propeller::Blade.new
 
         puts "Configuring #{config.name}..."
@@ -143,20 +141,17 @@ module Propeller
                                                                 :value => value)
             end
           end
+        end
 
-          puts ""
+        puts ""
 
-          puts "Options: "
-          configuration = Propeller::Selection.new settings
-          puts configuration.to_yaml
+        puts "Options: "
+        configuration = Propeller::Selection.new settings
+        puts configuration.to_yaml
 
-          puts
-          puts configuration[:multi_user]
-
-          File.open("config/blade.settings.yml", "w+") do |f|
-            f.write configuration.to_yaml
-            f.write "\n"
-          end
+        File.open("config/blade.settings.yml", "w+") do |f|
+          f.write configuration.to_yaml
+          f.write "\n"
         end
       end
     end
