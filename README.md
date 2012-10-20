@@ -20,7 +20,11 @@ Or install it yourself as:
 
 ## Describing a Blade
 
-Place a blade.yml file in your config/ path. And then specify three things:
+Place a blade.yml file in your config/ path. This file specifies your application's user
+defined settings and keeps track of any addon repositories that a user can elect to
+pull.
+
+Within this file, you may specify three things:
 
 ### Blade Name
 
@@ -40,15 +44,13 @@ specifically for the extra functionality.
 ### Configuration
 
     configuration:
-      - section:
-        name: "Main"
+      - section: "Main"
         options:
           - name: title
             description: "What will be the title of this node?"
             type: string
             default: "My Node"
-      - section:
-        name: "Appearance"
+      - section: "Appearance"
         options:
           - name: background_color
             description: "What will the background color be?"
