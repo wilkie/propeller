@@ -53,6 +53,8 @@ module Propeller
         puts ""
         puts "Addons"
 
+        addons = []
+
         config.addons.each do |addon|
           puts ""
           puts "Would you like to add #{addon.name} support?"
@@ -64,6 +66,8 @@ module Propeller
           else
             value = !!value.match(/^y$/i)
           end
+
+          addons << addon.name if value == true
         end
 
         settings = []
@@ -146,7 +150,7 @@ module Propeller
         puts ""
 
         puts "Options: "
-        configuration = Propeller::Selection.new settings
+        configuration = Propeller::Selection.new addons, settings
         puts configuration.to_yaml
 
         File.open("config/blade.settings.yml", "w+") do |f|

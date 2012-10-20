@@ -1,6 +1,8 @@
 module Propeller
   class Selection
-    def initialize(settings)
+    def initialize(addons, settings)
+      @addons = addons
+
       @settings = {}
 
       settings.each do |setting|
@@ -8,12 +10,34 @@ module Propeller
       end
     end
 
+    def addons_include?(addon)
+      @addons.include? addon
+    end
+
+    def option(name)
+      @settings[name].option
+    end
+
     def [](name)
-      @settings[name]
+      @settings[name].value
     end
 
     def to_yaml
-      @settings.values.map(&:to_json).join("\n") 
+      ret = ""
+
+      unless @addons.empty?
+        ret << "addons:\n  "
+        ret << @addons.map(&:to_json).join("\n  ")
+        ret << "\n"
+      end
+
+      unless @settings.empty?
+        ret << "settings:\n  "
+        ret << @settings.values.map(&:to_json).join("\n  ") 
+        ret << "\n"
+      end
+
+      ret.chomp
     end
 
     def to_json
@@ -23,7 +47,7 @@ module Propeller
     end
 
     def to_s
-      @settings.values.map(&:to_s).join("\n")
+      to_yaml
     end
   end
 end

@@ -66,14 +66,24 @@ module Propeller
       yaml = YAML::load_file(options[:config_file])
 
       settings = []
-      yaml.each do |key, value|
+      yaml['settings'] ||= []
+      yaml['settings'].each do |key, value|
         name = key.to_sym
         option = option(name)
         settings << Propeller::Configuration::Setting.new(:option => option,
                                                           :value  => value)
       end
 
-      @selection = Propeller::Selection.new settings
+      addons = []
+      yaml['addons'] ||= []
+      if yaml['addons'].is_a? String
+        yaml['addons'] = [yaml['addons']]
+      end
+      yaml['addons'].each do |key|
+        addons << key.to_sym
+      end
+
+      @selection = Propeller::Selection.new addons, settings
     end
   end
 end
