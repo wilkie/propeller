@@ -49,87 +49,98 @@ module Propeller
           exit -1
         end
 
-        case ARGV.first
-        when 'play'
-          fail unless ARGV[1]
+        config = Propeller::Blade.new
 
-          Gruesome::Logo.display
+        puts "Configuring #{config.name}..."
+        puts ""
+        puts "Addons"
 
-          puts
-          puts "--------------------------------------------------------------------------------"
-          puts
-
-          Gruesome::Machine.new(ARGV[1]).execute
-        else
-          config = Propeller::Blade.new
-
-          puts "Configuring #{config.name}..."
+        config.addons.each do |addon|
           puts ""
-          puts "Addons"
-
-          config.addons.each do |addon|
-            puts ""
-            puts "Would you like to add #{addon.name} support?"
-            puts "#{addon.description}"
-            print "(y/N): "
-            value = readline.chomp
-            if value == ""
-              value = false
-            else
-              value = !!value.match(/^y$/i)
-            end
+          puts "Would you like to add #{addon.name} support?"
+          puts "#{addon.description}"
+          print "(y/N): "
+          value = readline.chomp
+          if value == ""
+            value = false
+          else
+            value = !!value.match(/^y$/i)
           end
+        end
 
-          settings = []
+        settings = []
 
-          config.sections.each do |section|
-            if section.is_visible?(settings)
+        config.sections.each do |section|
+          if section.is_visible?(settings)
+            puts ""
+            puts section.name
+            section.options.each do |option|
               puts ""
-              puts section.name
-              section.options.each do |option|
-                puts ""
-                puts option.description
-                case option.type
-                when :bool
-                  if option.default == true
-                    print "(Y/n): "
-                  else
-                    print "(y/N): "
-                  end
-
-                  value = readline.chomp
-                  if value == ""
-                    value = option.default
-                  else
-                    value = !!value.match(/^y$/i)
-                  end
-                when :string
-                  print " : "
-                  value = readline.chomp
-                  if value == ""
-                    value = option.default
-                  end
-                when :integer
-                  print "(#{option.min}-#{option.max}, #{option.default}): "
-                  value = readline.chomp
-                  if value == ""
-                    value = option.default
-                  else
-                    value = value.to_i
-                  end
-                when :decimal
-                  print "(#{option.min}-#{option.max}, #{option.default}): "
-                  value = readline.chomp
-                  if value == ""
-                    value = option.default
-                  else
-                    value = value.to_f
-                  end
+              puts option.description
+              case option.type
+              when :bool
+                if option.default == true
+                  print "(Y/n): "
+                else
+                  print "(y/N): "
                 end
 
-                settings << Propeller::Configuration::Setting.new(:option => option,
-                                                                  :value => value)
+                value = readline.chomp
+                if value == ""
+                  value = option.default
+                else
+                  value = !!value.match(/^y$/i)
+                end
+              when :string
+                print " : "
+                value = readline.chomp
+                if value == ""
+                  value = option.default
+                end
+              when :integer
+                if option.max
+                  if option.min
+                    print "(Within #{option.min}-#{option.max}, Default #{option.default}): "
+                  else
+                    print "(Max #{option.max}, Default #{option.default}): "
+                  end
+                else
+                  if option.min
+                    print "(Min #{option.min}, Default #{option.default}): "
+                  else
+                    print "(Default #{option.default}): "
+                  end
+                end
+                value = readline.chomp
+                if value == ""
+                  value = option.default
+                else
+                  value = value.to_i
+                end
+              when :decimal
+                if option.max
+                  if option.min
+                    print "(Within #{option.min}-#{option.max}, Default #{option.default}): "
+                  else
+                    print "(Max #{option.max}, Default #{option.default}): "
+                  end
+                else
+                  if option.min
+                    print "(Min #{option.min}, Default #{option.default}): "
+                  else
+                    print "(Default #{option.default}): "
+                  end
+                end
+                value = readline.chomp
+                if value == ""
+                  value = option.default
+                else
+                  value = value.to_f
+                end
               end
+
+              settings << Propeller::Configuration::Setting.new(:option => option,
+                                                                :value => value)
             end
           end
 
@@ -137,10 +148,15 @@ module Propeller
 
           puts "Options: "
           configuration = Propeller::Selection.new settings
-          puts configuration
+          puts configuration.to_yaml
 
           puts
           puts configuration[:multi_user]
+
+          File.open("config/blade.settings.yml", "w+") do |f|
+            f.write configuration.to_yaml
+            f.write "\n"
+          end
         end
       end
     end
