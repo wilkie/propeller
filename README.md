@@ -89,21 +89,21 @@ And then execute:
 
 To add support for reading the Blade configurations, add this helper method:
 
-    def has_addon?(addon)
+    def addon_enabled?(addon)
       @blade ||= Propeller::Blade.new
-      @blade.selection.addons_include? addon
+      @blade.addon_enabled? addon
     end
 
-    def user_options
+    def user_option_for(key)
       @blade ||= Propeller::Blade.new
-      @blade.selection
+      @blade.user_option_for(key)
     end
 
 To use:
 
-    user_options[:title] # Get the user defined title
+    user_option_for :title # Get the user defined title
 
-    has_addon? :search # true/false depending on if the user selected the addon
+    addon_enabled? :search # true/false depending on if the user selected the addon
 
 ## Contributing
 

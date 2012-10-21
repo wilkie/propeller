@@ -12,11 +12,71 @@ module Propeller
     attr_accessor :sections
 
     def initialize(options = {})
-      options = {:config_file => "config/blade.yml"}.merge(options)
+      options = {:config_file => "config/blade.yml",
+                 :to_env      => true}.merge(options)
 
+      @config_file = options[:config_file]
+      @to_env      = options[:to_env]
+
+      if ENV['blade_name']
+        # We have loaded this stuff before,
+        # Let's lazy load settings and addons
+        #   (That is, do not open yaml file)
+        @name   = ENV['blade_name']
+
+        return
+      end
+
+      puts "Loading Main"
       yaml = YAML::load_file(options[:config_file])
 
       @name = yaml['name']
+
+      @addons = load_addons(yaml)
+
+      @sections = load_sections(yaml)
+
+      if @to_env
+        ENV['blade_name'] = @name
+      end
+    end
+
+    def selection(options = {})
+      @selection || load_selection(options)
+    end
+
+    def option(name)
+      if ENV['blade_name']
+        @sections ||= load_sections
+      end
+
+      section = @sections.select{|s| s.contains_option?(name)}.first
+
+      unless section.nil?
+        section.option(name)
+      end
+    end
+
+    def addon_enabled?(addon)
+      if ENV["blade_addon_#{addon.to_s}"]
+        ENV["blade_addon_#{addon.to_s}"] == "true"
+      else
+        selection.addons_include? addon
+      end
+    end
+
+    def user_option_for(name)
+      if ENV["blade_setting_#{name.to_s}"]
+        ENV["blade_setting_#{name.to_s}"]
+      else
+        selection[name]
+      end
+    end
+
+    private
+
+    def load_addons(yaml = nil)
+      yaml ||= YAML::load_file(@config_file)
 
       @addons = yaml['addons'].map do |addon|
         addon.keys.each do |key|
@@ -25,6 +85,10 @@ module Propeller
 
         Propeller::Addon.new addon
       end
+    end
+
+    def load_sections(yaml = nil)
+      yaml ||= YAML::load_file(@config_file)
 
       @sections = yaml['configuration'].map do |section|
         section.keys.each do |key|
@@ -46,23 +110,17 @@ module Propeller
       end
     end
 
-    def selection(options = {})
-      @selection || load_selection(options)
-    end
-
-    def option(name)
-      section = @sections.select{|s| s.contains_option?(name)}.first
-
-      unless section.nil?
-        section.option(name)
-      end
-    end
-
-    private
-
     def load_selection(options = {})
-      options = {:config_file => "config/blade.settings.yml"}.merge(options)
+      options = {:config_file => "config/blade.settings.yml",
+                 :to_env      => true}.merge(options)
 
+      if ENV['blade_addons']
+      end
+
+      if ENV['blade_setting']
+      end
+
+      puts "Loading Selection"
       yaml = YAML::load_file(options[:config_file])
 
       settings = []
