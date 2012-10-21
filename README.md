@@ -1,8 +1,10 @@
 # Propeller
 
 We are reaching a time when we want our applications to be widely deployed by as many people as possible, and we want
-to impose little to no technical assumptions on our users. This gem helps people install your applications directly
-to several different hosting options and allows them to consistently enable extra features.
+to impose little to no technical assumptions on our users. This gem helps people configure an application, enable
+particular addons they want, and then easily deploy
+to one of several different hosting options. By adding propeller support to many applications, the process can be
+consolidated and made consistent among all of the applications.
 
 ## End-User Usage
 
