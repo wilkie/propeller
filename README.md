@@ -43,7 +43,7 @@ Within this file, you may specify three things:
     addons:
       - name: "addon-name"
         git: ["https://github.com/gitpath",
-              "https://mymirror.com/gitpath]
+              "https://mymirror.com/gitpath"]
         description: "The text to display to describe this addon to the user."
 
 Addons may also have their own blade.yml that will specify configuration options
@@ -112,3 +112,9 @@ To use:
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
+
+### TODO
+
+1. Deployment to Heroku (and then other hosting services) through a one-click
+2. Web application to specify choices as opposed to the command-line.
+3. How to manage addons (how to pull them, access blade.yml, etc)
