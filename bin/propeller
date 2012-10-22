@@ -6,4 +6,3 @@ require 'propeller'
 require 'propeller/cli'
 
 Propeller::CLI.run
-
