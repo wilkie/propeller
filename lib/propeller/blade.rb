@@ -50,7 +50,12 @@ module Propeller
         @sections ||= load_sections
       end
 
-      section = @sections.select{|s| s.contains_option?(name)}.first
+      sections = @sections.select{|s| s.contains_option?(name)}
+      if sections.empty?
+        return nil
+      end
+
+      section = sections.first
 
       unless section.nil?
         section.option(name)
