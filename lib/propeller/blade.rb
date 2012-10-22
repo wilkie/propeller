@@ -18,7 +18,7 @@ module Propeller
       @config_file = options[:config_file]
       @to_env      = options[:to_env]
 
-      if ENV['blade_name']
+      if ENV['blade_name'] && @to_env
         # We have loaded this stuff before,
         # Let's lazy load settings and addons
         #   (That is, do not open yaml file)
@@ -46,7 +46,7 @@ module Propeller
     end
 
     def option(name)
-      if ENV['blade_name']
+      if ENV['blade_name'] && @to_env
         @sections ||= load_sections
       end
 
@@ -58,7 +58,7 @@ module Propeller
     end
 
     def addon_enabled?(addon)
-      if ENV["blade_addon_#{addon.to_s}"]
+      if ENV["blade_addon_#{addon.to_s}"] && @to_env
         ENV["blade_addon_#{addon.to_s}"] == "true"
       else
         selection.addons_include? addon
@@ -66,7 +66,7 @@ module Propeller
     end
 
     def user_option_for(name)
-      if ENV["blade_setting_#{name.to_s}"]
+      if ENV["blade_setting_#{name.to_s}"] && @to_env
         ENV["blade_setting_#{name.to_s}"]
       else
         selection[name]
@@ -78,6 +78,7 @@ module Propeller
     def load_addons(yaml = nil)
       yaml ||= YAML::load_file(@config_file)
 
+      yaml['addons'] ||= []
       @addons = yaml['addons'].map do |addon|
         addon.keys.each do |key|
           addon[(key.to_sym rescue key) || key] = addon.delete(key)
@@ -90,6 +91,7 @@ module Propeller
     def load_sections(yaml = nil)
       yaml ||= YAML::load_file(@config_file)
 
+      yaml['configuration'] ||= []
       @sections = yaml['configuration'].map do |section|
         section.keys.each do |key|
           section[(key.to_sym rescue key) || key] = section.delete(key)
