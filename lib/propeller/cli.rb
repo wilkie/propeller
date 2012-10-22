@@ -67,12 +67,18 @@ module Propeller
             value = !!value.match(/^y$/i)
           end
 
-          addons << addon.name if value == true
+          addons << addon if value == true
+        end
+
+        sections = config.sections
+
+        addons.each do |a|
+          sections.concat a.blade.sections
         end
 
         settings = []
 
-        config.sections.each do |section|
+        sections.each do |section|
           if section.is_visible?(settings)
             puts ""
             puts section.name
@@ -150,6 +156,7 @@ module Propeller
         puts ""
 
         puts "Options: "
+        addons.map!(&:name)
         configuration = Propeller::Selection.new addons, settings
         puts configuration.to_yaml
 
