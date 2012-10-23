@@ -27,7 +27,6 @@ module Propeller
         return
       end
 
-      puts "Loading Main"
       yaml = YAML::load_file(options[:config_file])
 
       @name = yaml['name']
@@ -89,6 +88,8 @@ module Propeller
           addon[(key.to_sym rescue key) || key] = addon.delete(key)
         end
 
+        addon[:name] = addon[:name].to_sym
+
         Propeller::Addon.new addon
       end
     end
@@ -127,7 +128,6 @@ module Propeller
       if ENV['blade_setting']
       end
 
-      puts "Loading Selection"
       yaml = YAML::load_file(options[:config_file])
 
       settings = []
