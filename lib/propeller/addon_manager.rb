@@ -6,7 +6,7 @@ module Propeller
     end
 
     def self.modules
-      @@modules
+      @@modules ||= []
     end
   end
 end
