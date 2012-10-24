@@ -1,5 +1,7 @@
 module Propeller
   class Selection
+    attr_accessor :addons
+
     def initialize(addons, settings)
       @addons = addons
 
