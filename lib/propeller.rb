@@ -2,13 +2,13 @@ require "propeller/version"
 require "propeller/addon_manager"
 
 module Propeller
-  def self.configure(path)
-    @@path = path
+  def self.configure(options)
+    @@path = options[:path]
   end
 
   def self.require_from_main(path)
-    basepath = @@path || "."
-    path = "#{basepath}/#{path}"
+    @@path ||= "."
+    path = "#{@@path}/#{path}"
   end
 
   def self.require_from_addon(addon_name, path)
