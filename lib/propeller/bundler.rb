@@ -17,3 +17,7 @@ def addons
     end
   end
 end
+
+def path_for_addon(addon)
+  Gem::Specification::find_by_name(addon.to_s).gem_dir
+end
