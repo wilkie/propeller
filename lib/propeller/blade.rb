@@ -10,6 +10,7 @@ module Propeller
     attr_accessor :name
     attr_accessor :addons
     attr_accessor :sections
+    attr_accessor :addon_sections
 
     def initialize(options = {})
       options = {:config_file => "config/blade.yml",
@@ -35,13 +36,15 @@ module Propeller
 
       @sections = load_sections(yaml)
 
+      @addon_sections = load_all_addon_sections
+
       if @to_env
         ENV['blade_name'] = @name
       end
     end
 
     def selection(options = {})
-      @selection || load_selection(options)
+      @selection ||= load_selection(options)
     end
 
     def option(name)
@@ -49,7 +52,12 @@ module Propeller
         @sections ||= load_sections
       end
 
-      sections = @sections.select{|s| s.contains_option?(name)}
+      all_sections = @sections
+      @addon_sections.values.each do |sections|
+        all_sections.concat(sections)
+      end
+
+      sections = all_sections.select{|s| s.contains_option?(name)}
       if sections.empty?
         return nil
       end
@@ -118,6 +126,18 @@ module Propeller
       end
     end
 
+    def load_all_addon_sections
+      @addon_sections ||= {}
+      @addons.each do |a|
+        @addon_sections[a.name] ||= load_addon_sections(a) if a.blade_exists?
+      end
+      @addon_sections
+    end
+
+    def load_addon_sections(addon)
+      addon.blade.sections if addon.blade_exists?
+    end
+
     def load_selection(options = {})
       options = {:config_file => "config/blade.settings.yml",
                  :to_env      => true}.merge(options)
@@ -128,24 +148,43 @@ module Propeller
       if ENV['blade_setting']
       end
 
-      yaml = YAML::load_file(options[:config_file])
+      # reload addon sections
+      load_all_addon_sections
 
       settings = []
-      yaml['settings'] ||= []
-      yaml['settings'].each do |key, value|
-        name = key.to_sym
-        option = option(name)
-        settings << Propeller::Configuration::Setting.new(:option => option,
-                                                          :value  => value)
+      addons = []
+      if File.exists? options[:config_file]
+        yaml = YAML::load_file(options[:config_file])
+
+        yaml['settings'] ||= []
+        yaml['settings'].each do |key, value|
+          name = key.to_sym
+          option = option(name)
+          settings << Propeller::Configuration::Setting.new(:option => option,
+                                                            :value  => value)
+        end
+
+        yaml['addons'] ||= []
+        if yaml['addons'].is_a? String
+          yaml['addons'] = [yaml['addons']]
+        end
+        yaml['addons'].each do |key|
+          addons << key.to_sym
+        end
       end
 
-      addons = []
-      yaml['addons'] ||= []
-      if yaml['addons'].is_a? String
-        yaml['addons'] = [yaml['addons']]
+      all_sections = @sections
+      @addon_sections.values.each do |sections|
+        all_sections.concat(sections)
       end
-      yaml['addons'].each do |key|
-        addons << key.to_sym
+
+      all_sections.each do |section|
+        section.options.each do |option|
+          unless settings.any?{|s| s.option.name == option.name}
+            settings << Propeller::Configuration::Setting.new(:option => option,
+                                                              :value  => option.default)
+          end
+        end
       end
 
       @selection = Propeller::Selection.new addons, settings

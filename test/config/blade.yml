@@ -2,7 +2,7 @@ name: "rstat.us"
 
 addons:
   - name: "search"
-    git: ["http://github.com/hotsh/rstat.us-search",
+    git: ["http://github.com/wilkie/rstat.us-search",
           "http://gitorious.com/hotsh/rstat.us-search",
           "http://code.rstat.us.com/rstat.us-search"]
     description: "Provides better search indexing of statuses."
