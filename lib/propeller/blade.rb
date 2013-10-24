@@ -128,6 +128,7 @@ module Propeller
 
     def load_all_addon_sections
       @addon_sections ||= {}
+      @addons ||= load_addons
       @addons.each do |a|
         @addon_sections[a.name] ||= load_addon_sections(a) if a.blade_exists?
       end
