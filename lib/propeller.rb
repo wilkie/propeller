@@ -1,5 +1,6 @@
 require "propeller/version"
 require "propeller/addon_manager"
+require "propeller/blade"
 
 module Propeller
   def self.configure(options)
