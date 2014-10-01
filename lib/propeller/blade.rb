@@ -88,7 +88,7 @@ module Propeller
     private
 
     def load_addons(yaml = nil)
-      yaml ||= YAML::load_file(@config_file)
+      yaml ||= YAML::load_file(@config_file) || {}
 
       yaml['addons'] ||= []
       @addons = yaml['addons'].map do |addon|
