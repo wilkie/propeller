@@ -72,6 +72,7 @@ module Propeller
     def addon_enabled?(addon)
       if ENV["blade_addon_#{addon.to_s}"] && @to_env
         ENV["blade_addon_#{addon.to_s}"] == "true"
+      elsif @to_env
       else
         selection.addons_include? addon
       end
@@ -80,6 +81,7 @@ module Propeller
     def user_option_for(name)
       if ENV["blade_setting_#{name.to_s}"] && @to_env
         ENV["blade_setting_#{name.to_s}"]
+      elsif @to_env
       else
         selection[name]
       end
@@ -166,6 +168,9 @@ module Propeller
         option = option(name)
         settings << Propeller::Configuration::Setting.new(:option => option,
                                                           :value  => value)
+        if @to_env
+          ENV["blade_setting_#{options.to_s}"] = value
+        end
       end
 
       yaml['addons'] ||= []
@@ -186,6 +191,9 @@ module Propeller
           unless settings.any?{|s| s.option.name == option.name}
             settings << Propeller::Configuration::Setting.new(:option => option,
                                                               :value  => option.default)
+            if @to_env
+              ENV["blade_setting_#{options.to_s}"] = options.default
+            end
           end
         end
       end
