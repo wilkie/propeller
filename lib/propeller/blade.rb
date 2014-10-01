@@ -103,7 +103,7 @@ module Propeller
     end
 
     def load_sections(yaml = nil)
-      yaml ||= YAML::load_file(@config_file)
+      yaml ||= YAML::load_file(@config_file) || {}
 
       yaml['configuration'] ||= []
       @sections = yaml['configuration'].map do |section|
