@@ -23,12 +23,12 @@ module Propeller
         # We have loaded this stuff before,
         # Let's lazy load settings and addons
         #   (That is, do not open yaml file)
-        @name   = ENV['blade_name']
+        @name = ENV['blade_name']
 
         return
       end
 
-      yaml = YAML::load_file(options[:config_file])
+      yaml = YAML::load_file(options[:config_file]) || {}
 
       @name = yaml['name']
 
