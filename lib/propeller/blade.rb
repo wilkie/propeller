@@ -100,6 +100,10 @@ module Propeller
 
         addon[:name] = addon[:name].to_sym
 
+        if @to_env
+          ENV["blade_addon_#{addon[:name].to_s}"] == "false"
+        end
+
         Propeller::Addon.new addon
       end
     end
@@ -133,6 +137,12 @@ module Propeller
       @addons ||= load_addons
       @addons.each do |a|
         @addon_sections[a.name] ||= load_addon_sections(a) if a.blade_exists?
+
+        if a.blade_exists?
+          if @to_env
+            ENV["blade_addon_#{addon[:name].to_s}"] == "true"
+          end
+        end
       end
       @addon_sections
     end
