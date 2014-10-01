@@ -156,22 +156,24 @@ module Propeller
       addons = []
       if File.exists? options[:config_file]
         yaml = YAML::load_file(options[:config_file])
+      else
+        yaml = {}
+      end
 
-        yaml['settings'] ||= []
-        yaml['settings'].each do |key, value|
-          name = key.to_sym
-          option = option(name)
-          settings << Propeller::Configuration::Setting.new(:option => option,
-                                                            :value  => value)
-        end
+      yaml['settings'] ||= []
+      yaml['settings'].each do |key, value|
+        name = key.to_sym
+        option = option(name)
+        settings << Propeller::Configuration::Setting.new(:option => option,
+                                                          :value  => value)
+      end
 
-        yaml['addons'] ||= []
-        if yaml['addons'].is_a? String
-          yaml['addons'] = [yaml['addons']]
-        end
-        yaml['addons'].each do |key|
-          addons << key.to_sym
-        end
+      yaml['addons'] ||= []
+      if yaml['addons'].is_a? String
+        yaml['addons'] = [yaml['addons']]
+      end
+      yaml['addons'].each do |key|
+        addons << key.to_sym
       end
 
       all_sections = @sections
